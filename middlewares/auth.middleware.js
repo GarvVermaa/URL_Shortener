@@ -1,0 +1,24 @@
+import { validateUserToken } from "../utils/token";
+/**
+ * 
+ * @param {import("express").Request} req 
+ * @param {import("express").Response} res 
+ * @param {import("express").NextFunction} next 
+ */
+
+export function authenticationMiddleware(req, res, next) {
+  const authHeader = req.header['authorization']
+  if (!authHeader) {
+    return next();
+  }
+  if (!authHeader.startsWith('Bearer')) {
+    return res.status(404).json({ error: `Authorization Header must start with Bearer` })
+  }
+
+  const [_, token] = authHeader.split(' ');
+
+  const payload=validateUserToken(token);
+  req.user=payload;
+  next();
+
+}
