@@ -1,11 +1,11 @@
 import express from 'express';
 import { db } from '../db/index.js'
 import { usersTable } from '../models/user.model.js';
-import { randomBytes, createHmac } from 'node:crypto';
 import { signupPostRequestBodySchema, loginPostRequestBodySchema } from '../validation/request.validation.js';
 import { hashPasswordWithSalt } from '../utils/hash.js';
 import { getUserByEmail } from '../services/user.services.js';
 import { createUserToken } from '../utils/token.js';
+
 
 const router = express.Router();
 
