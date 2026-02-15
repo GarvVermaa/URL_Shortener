@@ -5,7 +5,7 @@ import { urlsTable } from '../models/url.model.js';
 import { nanoid } from 'nanoid';
 import { ensureAuthenticated } from '../middlewares/auth.middleware.js';
 import { createShortUrl } from '../services/url.services.js';
-
+import { eq } from 'drizzle-orm';
 
 const router = express.Router();
 
@@ -34,5 +34,24 @@ router.post('/shorten', ensureAuthenticated, async (req, res) => {
 
 
 });
+
+router.get('/:shortCode', async function (req, res) {
+  const code = req.params.shortCode;
+  const [result] = await db
+    .select({
+      targetURL: urlsTable.targetURL
+    })
+    .from(urlsTable)
+    .where(eq(code, urlsTable.shortCode));
+  if (!result) {
+    return res.status(404).json({ error: `Invalid URL` });
+  }
+
+  return res.redirect(result.targetURL);
+
+});
+
+
+
 
 export default router;
